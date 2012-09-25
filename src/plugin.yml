@@ -1,0 +1,16 @@
+name: vgTrade
+author: Muson
+main: ru.vgTrade.VgTrade
+version: 1.4
+commands:
+  trade:
+    description: Trade with another player
+    aliases: vgtrade
+    usage: /<command> {player}
+permissions:
+  vgtrade.*:
+    description: Allows access to all Trade commands
+    default: op
+  vgtrade.trade:
+    description: Allows players to trade using Trade
+    default: true
