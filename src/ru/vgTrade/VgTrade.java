@@ -32,9 +32,6 @@ public class VgTrade extends JavaPlugin {
 
     public void onDisable() {
         manager.terminateActiveTrades();
-
-        languageManager.save();
-        Log.info(this + " disabled");
     }
 
     public void onEnable() {
@@ -50,7 +47,8 @@ public class VgTrade extends JavaPlugin {
 
         Log.verbose = config.isVerboseLoggingEnabled();
         
-        Log.info(this + " enabled");
+        Log.init(this.getDataFolder());
+        Log.info("Enabled!");
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {

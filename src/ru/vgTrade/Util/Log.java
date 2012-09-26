@@ -19,12 +19,29 @@
 
 package ru.vgTrade.Util;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import org.bukkit.craftbukkit.util.ShortConsoleLogFormatter;
 
 public class Log {
 
     private static Logger log = Logger.getLogger("Minecraft");
     public static boolean verbose = false;
+    
+    public static void init(File dir) {
+        try {
+            FileHandler fh = new FileHandler(dir.getAbsolutePath()+"/trade.log", 1024*1024*3, 3, true);
+            fh.setFormatter(new SimpleFormatter());
+            log.addHandler(fh);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     public static void info(String msg) {
         log.info(msg);

@@ -193,6 +193,23 @@ public class Trade {
 
         //sendMessage(LanguageManager.getString(LanguageManager.Strings.FINISHED));
         Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was completed");
+        if (Log.verbose) {
+            String tradeList = "";
+            int i=0;
+            for (ItemStack is : InventoryUtils.getRightContents(inventory)) {
+                if (i == 0) tradeList += ",";
+                tradeList += is.getType().name() + "x"+is.getAmount();
+                i++;
+            }
+            tradeList = "";
+            i = 0;
+            Log.trade(initiator.getName()+" got:"+tradeList);
+            for (ItemStack is : InventoryUtils.getLeftContents(inventory)) {
+                if (i == 0) tradeList += ",";
+                tradeList += is.getType().name() + "x"+is.getAmount();
+            }
+            Log.trade(target.getName()+" got:"+tradeList);
+        }
     }
 
     private int getEmptyCases(ItemStack[] contents) {
