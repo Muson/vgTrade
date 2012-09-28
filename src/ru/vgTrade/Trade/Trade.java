@@ -188,10 +188,9 @@ public class Trade {
         
         initiator.doTrade(InventoryUtils.getRightContents(inventory));
         target.doTrade(InventoryUtils.getLeftContents(inventory));
-
+        
         manager.finish(this);
-
-        //sendMessage(LanguageManager.getString(LanguageManager.Strings.FINISHED));
+        
         Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was completed");
         if (Log.verbose) {
             String tradeList = "";
@@ -210,6 +209,9 @@ public class Trade {
             }
             Log.trade(target.getName()+" got:"+tradeList);
         }
+
+        sendMessage(LanguageManager.getString(LanguageManager.Strings.FINISHED));
+        
     }
 
     private int getEmptyCases(ItemStack[] contents) {

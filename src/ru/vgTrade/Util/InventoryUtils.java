@@ -52,13 +52,13 @@ public class InventoryUtils {
         
         if (inv == null) {
             Log.severe("getLeftContents: inventory is null");
-            return null;
+            return items;
         }
         
         int count = 0;
         ItemStack[] ist = inv.getContents();
         if (ist == null) {
-            return null;
+            return items;
         }
         
         for (int i=0; i<LEFT_SLOTS.length; i++) {
@@ -88,13 +88,13 @@ public class InventoryUtils {
         
         if (inv == null) {
             Log.severe("getRightContents: inventory is null");
-            return null;
+            return items;
         }
         
         int count = 0;
         ItemStack[] ist = inv.getContents();
         if (ist == null) {
-            return null;
+            return items;
         }
         
         for (int i=0; i<RIGHT_SLOTS.length; i++) {
