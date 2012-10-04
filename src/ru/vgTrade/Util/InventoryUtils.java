@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
- * @author pasha
+ * @author Muson
  */
 public class InventoryUtils {
     static JavaPlugin plugin = null;
