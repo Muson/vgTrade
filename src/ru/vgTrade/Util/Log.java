@@ -20,13 +20,9 @@
 package ru.vgTrade.Util;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import org.bukkit.craftbukkit.util.ShortConsoleLogFormatter;
 
 public class Log {
 

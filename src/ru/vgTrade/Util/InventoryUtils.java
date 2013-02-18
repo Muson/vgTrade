@@ -4,9 +4,14 @@
  */
 package ru.vgTrade.Util;
 
+import java.util.ArrayList;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Wool;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -35,13 +40,51 @@ public class InventoryUtils {
         
         if (plugin != null) {
             inv = plugin.getServer().createInventory(null, 36, id);
+            ItemStack is = new ItemStack(Material.WOOL, 1);
+            ItemMeta im = null;
+            ArrayList<String> al = new ArrayList<String>();
+            
             for (int i=0; i<BUTTON_SLOTS.length; i++) {
-                inv.setItem(BUTTON_SLOTS[i], new ItemStack(280));
+                is = new ItemStack(Material.STICK);
+                im = is.getItemMeta();
+                im.setDisplayName("---");
+                is.setItemMeta(im);
+                inv.setItem(BUTTON_SLOTS[i], is);
             }
-            inv.setItem(CONFIRM_SLOT, new ItemStack(Material.WOOL, 1, (short)1, (byte)5));
-            inv.setItem(DECLINE_SLOT, new ItemStack(Material.WOOL, 1, (short)1, (byte)14));
-            inv.setItem(P1_CONFIRM_SLOT, new ItemStack(Material.WOOL, 1, (short)1, (byte)15));
-            inv.setItem(P2_CONFIRM_SLOT, new ItemStack(Material.WOOL, 1, (short)1, (byte)15));
+            
+            is = new Wool(DyeColor.LIME).toItemStack();
+            im = is.getItemMeta();
+            im.setDisplayName("Confirm trade!");
+            al.clear(); al.add(ChatColor.GREEN+"Click this block to confirm trade");
+            im.setLore(al);
+            is.setItemMeta(im);
+            inv.setItem(CONFIRM_SLOT, is);
+            
+            is = new Wool(DyeColor.RED).toItemStack();
+            im = is.getItemMeta();
+            im.setDisplayName("Cancel trade");
+            al.clear(); al.add(ChatColor.RED+"Click this block to cancal trade");
+            im.setLore(al);
+            is.setItemMeta(im);
+            inv.setItem(DECLINE_SLOT, is);
+            
+            is = new Wool(DyeColor.BLACK).toItemStack();
+            im = is.getItemMeta();
+            im.setDisplayName("Player trade status");
+            al.clear(); al.add(ChatColor.WHITE+"Status of trade confirmation");
+            al.add(ChatColor.GREEN+"Player 1");
+            im.setLore(al);
+            is.setItemMeta(im);
+            inv.setItem(P1_CONFIRM_SLOT, is);
+            
+            is = new Wool(DyeColor.BLACK).toItemStack();
+            im = is.getItemMeta();
+            im.setDisplayName("Player trade status");
+            al.clear(); al.add(ChatColor.WHITE+"Status of trade confirmation");
+            al.add(ChatColor.GREEN+"Player 2");
+            im.setLore(al);
+            is.setItemMeta(im);
+            inv.setItem(P2_CONFIRM_SLOT, is);
         }
         
         return inv;

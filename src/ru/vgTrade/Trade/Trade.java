@@ -1,17 +1,18 @@
 package ru.vgTrade.Trade;
 
 import java.util.Arrays;
-import ru.vgTrade.Config.LanguageManager;
-import ru.vgTrade.Util.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Wool;
+import ru.vgTrade.Config.LanguageManager;
 import ru.vgTrade.Util.InventoryUtils;
+import ru.vgTrade.Util.Log;
 
 /**
  * @author Oliver Brown (Arkel)
@@ -87,11 +88,15 @@ public class Trade {
         if (player.equals(initiator.getPlayer())) {
             initiator.setState(TradeState.CONFIRMED);
             initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
-            inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, new ItemStack(Material.WOOL, 1, (short)1, (byte)5));
+            ItemStack is = new Wool(DyeColor.LIME).toItemStack();
+            is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+            inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, is);
         } else {
             target.setState(TradeState.CONFIRMED);
             target.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
-            inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, new ItemStack(Material.WOOL, 1, (short)1, (byte)5));
+            ItemStack is = new Wool(DyeColor.LIME).toItemStack();
+            is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+            inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, is);
         }   
 
         if (target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
@@ -103,16 +108,18 @@ public class Trade {
     public void cancel(Player player) {
         
         if (player.equals(initiator.getPlayer()) && initiator.getState() == TradeState.CONFIRMED) {
+            initiator.setState(TradeState.CHEST_OPEN);
             initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.DECLINED));
-            inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, new ItemStack(Material.WOOL, 1, (short)1, (byte)15));
-            
-            initiator.setState(TradeState.CHEST_OPEN);
+            ItemStack is = new Wool(DyeColor.BLACK).toItemStack();
+            is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+            inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, is);
         } else if (target.getState() == TradeState.CONFIRMED) {
+            target.setState(TradeState.CHEST_OPEN);
             target.sendMessage(LanguageManager.getString(LanguageManager.Strings.DECLINED));
-            inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, new ItemStack(Material.WOOL, 1, (short)1, (byte)15));
-            
-            initiator.setState(TradeState.CHEST_OPEN);
-        }   
+            ItemStack is = new Wool(DyeColor.BLACK).toItemStack();
+            is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+            inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, is);
+        }
         
     }
 
@@ -236,7 +243,7 @@ public class Trade {
     private int getUsedCases(ItemStack[] contents) {
         int count = 0;
         if (contents == null) {
-            Log.info("Close contents is empty!");
+            //Log.info("Close contents is empty!");
             return 0;
         }
         for (ItemStack content : contents) {

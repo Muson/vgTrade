@@ -16,7 +16,6 @@ import ru.vgTrade.Trade.TradeManager;
 import ru.vgTrade.Trade.TradePlayer;
 import ru.vgTrade.Util.InventoryUtils;
 import ru.vgTrade.Util.Log;
-import org.bukkit.plugin.Plugin;
 /**
  * @author Muson (Original code: Oliver Brown (Arkel))
  * 
@@ -30,10 +29,12 @@ public class VgTrade extends JavaPlugin {
 
     private List<String> playersIgnoring = new ArrayList<String>();
 
+    @Override
     public void onDisable() {
         manager.terminateActiveTrades();
     }
 
+    @Override
     public void onEnable() {
         Log.serLogger(this.getLogger());
         InventoryUtils.setPlugin(this);
