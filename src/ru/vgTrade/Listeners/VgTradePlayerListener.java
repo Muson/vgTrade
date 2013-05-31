@@ -43,7 +43,7 @@ public class VgTradePlayerListener implements Listener {
         TradeRequest tr = plugin.getTradeManager().getRequest(player);
         TradeRequest tr1 = plugin.getTradeManager().getRequest(target);
         if (tr != null && tr == tr1 && !tr.isInitiator(player)) {
-            player.performCommand("/trade accept");
+            player.performCommand("trade accept");
         }
     }
 

@@ -56,7 +56,7 @@ public class Trade {
                 target.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.TIMED));
                 Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " timed out");
             }
-        }, 600L);
+        }, 120L);
 
     }
 
@@ -69,14 +69,14 @@ public class Trade {
         if (!Bukkit.getServer().getScheduler().isCurrentlyRunning(cancellerID)) {
             unscheduleCancellation();
         }
+        
+        manager.finish(this);
 
         target.getPlayer().closeInventory();
         initiator.getPlayer().closeInventory();
 
         initiator.restore(InventoryUtils.getLeftContents(inventory));
         target.restore(InventoryUtils.getRightContents(inventory));
-
-        manager.finish(this);
 
         Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was aborted");
 
@@ -86,17 +86,39 @@ public class Trade {
     public void confirm(Player player) {
 
         if (player.equals(initiator.getPlayer())) {
-            initiator.setState(TradeState.CONFIRMED);
-            initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
-            ItemStack is = new Wool(DyeColor.LIME).toItemStack();
-            is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
-            inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, is);
+            if (initiator.getState() == TradeState.CHEST_OPEN && 
+                    (target.getState() == TradeState.CHEST_OPEN || target.getState() == TradeState.CONFIRM)) {
+                initiator.setState(TradeState.CONFIRM);
+                initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
+                ItemStack is = new Wool(DyeColor.YELLOW).toItemStack();
+                is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+                inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, is);
+            }
+            else if (initiator.getState() == TradeState.CONFIRM && 
+                    (target.getState() == TradeState.CONFIRM || target.getState() == TradeState.CONFIRMED)) {
+                initiator.setState(TradeState.CONFIRMED);
+                initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
+                ItemStack is = new Wool(DyeColor.LIME).toItemStack();
+                is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+                inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, is);
+            }
         } else {
-            target.setState(TradeState.CONFIRMED);
-            target.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
-            ItemStack is = new Wool(DyeColor.LIME).toItemStack();
-            is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
-            inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, is);
+            if (target.getState() == TradeState.CHEST_OPEN && 
+                    (initiator.getState() == TradeState.CHEST_OPEN || initiator.getState() == TradeState.CONFIRM)) {
+                target.setState(TradeState.CONFIRM);
+                target.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
+                ItemStack is = new Wool(DyeColor.YELLOW).toItemStack();
+                is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+                inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, is);
+            }
+            else if (target.getState() == TradeState.CONFIRM && 
+                    (initiator.getState() == TradeState.CONFIRM || initiator.getState() == TradeState.CONFIRMED)) {
+                target.setState(TradeState.CONFIRMED);
+                target.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
+                ItemStack is = new Wool(DyeColor.LIME).toItemStack();
+                is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+                inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, is);
+            }
         }   
 
         if (target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
@@ -107,18 +129,36 @@ public class Trade {
     
     public void cancel(Player player) {
         
-        if (player.equals(initiator.getPlayer()) && initiator.getState() == TradeState.CONFIRMED) {
-            initiator.setState(TradeState.CHEST_OPEN);
-            initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.DECLINED));
-            ItemStack is = new Wool(DyeColor.BLACK).toItemStack();
-            is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
-            inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, is);
-        } else if (target.getState() == TradeState.CONFIRMED) {
-            target.setState(TradeState.CHEST_OPEN);
-            target.sendMessage(LanguageManager.getString(LanguageManager.Strings.DECLINED));
-            ItemStack is = new Wool(DyeColor.BLACK).toItemStack();
-            is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
-            inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, is);
+        if (player.equals(initiator.getPlayer())) {
+            if (initiator.getState() == TradeState.CONFIRMED && target.getState() == TradeState.CONFIRM) {
+                initiator.setState(TradeState.CONFIRM);
+                initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.DECLINED));
+                ItemStack is = new Wool(DyeColor.YELLOW).toItemStack();
+                is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+                inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, is);
+            }
+            else if (initiator.getState() == TradeState.CONFIRM && target.getState() == TradeState.CHEST_OPEN) {
+                initiator.setState(TradeState.CHEST_OPEN);
+                initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.DECLINED));
+                ItemStack is = new Wool(DyeColor.BLACK).toItemStack();
+                is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+                inventory.setItem(InventoryUtils.P1_CONFIRM_SLOT, is);
+            }
+        } else {
+            if (target.getState() == TradeState.CONFIRMED && initiator.getState() == TradeState.CONFIRM) {
+                target.setState(TradeState.CONFIRM);
+                target.sendMessage(LanguageManager.getString(LanguageManager.Strings.DECLINED));
+                ItemStack is = new Wool(DyeColor.YELLOW).toItemStack();
+                is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+                inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, is);
+            }
+            else if (target.getState() == TradeState.CONFIRM && initiator.getState() == TradeState.CHEST_OPEN) {
+                target.setState(TradeState.CHEST_OPEN);
+                target.sendMessage(LanguageManager.getString(LanguageManager.Strings.DECLINED));
+                ItemStack is = new Wool(DyeColor.BLACK).toItemStack();
+                is.setItemMeta(inventory.getItem(InventoryUtils.P1_CONFIRM_SLOT).getItemMeta());
+                inventory.setItem(InventoryUtils.P2_CONFIRM_SLOT, is);
+            }
         }
         
     }
@@ -129,7 +169,7 @@ public class Trade {
             if (Arrays.asList(InventoryUtils.BUTTON_SLOTS).contains(slot)) {
                 // Обработка кнопок
                 if (slot == InventoryUtils.CONFIRM_SLOT) {
-                    if (target.getState() == TradeState.CHEST_OPEN || initiator.getState() == TradeState.CHEST_OPEN) {
+                    if (target.getState() != TradeState.CONFIRMED || initiator.getState() != TradeState.CONFIRMED) {
 
                         if (getUsedCases(InventoryUtils.getLeftContents(inventoryToCheck)
                             ) > getEmptyCases(target.getInventory().getContents()) || 
@@ -148,7 +188,7 @@ public class Trade {
                 }
                 
                 if (slot == InventoryUtils.DECLINE_SLOT) {
-                    if (target.getState() == TradeState.CONFIRMED || initiator.getState() == TradeState.CONFIRMED) {
+                    if (target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN) {
 
                         if (getUsedCases(InventoryUtils.getLeftContents(inventoryToCheck)
                             ) > getEmptyCases(target.getInventory().getContents()) || 
@@ -190,13 +230,13 @@ public class Trade {
         initiator.tradeFinish(InventoryUtils.getRightContents(inventory), InventoryUtils.getLeftContents(inventory));
         target.tradeFinish(InventoryUtils.getLeftContents(inventory), InventoryUtils.getRightContents(inventory));
         
+        manager.finish(this);
+        
         initiator.getPlayer().closeInventory();
         target.getPlayer().closeInventory();
         
         initiator.doTrade(InventoryUtils.getRightContents(inventory));
         target.doTrade(InventoryUtils.getLeftContents(inventory));
-        
-        manager.finish(this);
         
         Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was completed");
         if (Log.verbose) {

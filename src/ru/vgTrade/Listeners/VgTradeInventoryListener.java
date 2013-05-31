@@ -29,7 +29,7 @@ public class VgTradeInventoryListener implements Listener {
      *
      * @param event the event
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled=true)
     public void onInventoryClick(org.bukkit.event.inventory.InventoryClickEvent event) {
         Event.Result result;
         Player player = (Player) event.getWhoClicked();
@@ -65,7 +65,7 @@ public class VgTradeInventoryListener implements Listener {
         if (!trade.canUseInventory() && event.getRawSlot() < 36) {
             result = Event.Result.DENY;
         } 
-
+        
         event.setResult(result);
     }
 
