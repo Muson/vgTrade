@@ -1,5 +1,6 @@
 package ru.vgTrade.Listeners;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -82,6 +83,13 @@ public class VgTradeInventoryListener implements Listener {
         // do nothing if the player isn't trading
         if (!manager.isTrading(player)) {
             return;
+        }
+        
+        ItemStack is = player.getItemInHand();
+        if (is != null && is.getType()!=Material.AIR) {
+            player.getInventory().addItem(is);
+            is.setTypeId(0);
+            is.setAmount(0);
         }
 
         // abort trade
