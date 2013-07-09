@@ -1,7 +1,7 @@
 name: vgTrade
 author: Muson
 main: ru.vgTrade.VgTrade
-version: 1.5
+version: 1.6
 commands:
   trade:
     description: Trade with another player

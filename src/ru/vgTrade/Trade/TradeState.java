@@ -1,5 +1,5 @@
 package ru.vgTrade.Trade;
 
 public enum TradeState {
-    CHEST_OPEN, CHEST_CLOSED, CONFIRM, CONFIRMED
+    CHEST_OPEN, PREPARE, CHEST_CLOSED, CONFIRM1, CONFIRM2, CONFIRMED
 }

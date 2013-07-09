@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.vgTrade.Trade.Trade;
 import ru.vgTrade.Trade.TradeManager;
+import ru.vgTrade.Trade.TradeState;
 import ru.vgTrade.VgTrade;
 
 public class VgTradeInventoryListener implements Listener {
@@ -38,11 +39,8 @@ public class VgTradeInventoryListener implements Listener {
         // ditch the event early on if the player isn't trading to avoid unnecessary work
         if (!plugin.getTradeManager().isTrading(player)) {
             return;
-        } else if (event.isShiftClick() || event.getSlotType() == SlotType.OUTSIDE) {
-            event.setResult(Event.Result.DENY);
-            return;
         }
-
+        
         ItemStack cursor = event.getCursor();
         ItemStack item = event.getCurrentItem();
         
@@ -57,15 +55,14 @@ public class VgTradeInventoryListener implements Listener {
         Inventory inventory = event.getInventory();
 
         if (item != null && item.getAmount() < 0) {
+            player.sendMessage("Empty item");
             result = Event.Result.DENY;
         } else if (cursor != null && cursor.getAmount() < 0) {
+            player.sendMessage("Empty cursor");
             result = Event.Result.DENY;
         } else {
             result = trade.slotCheck(player, event.getRawSlot(), inventory);
         }
-        if (!trade.canUseInventory() && event.getRawSlot() < 36) {
-            result = Event.Result.DENY;
-        } 
         
         event.setResult(result);
     }
@@ -85,14 +82,15 @@ public class VgTradeInventoryListener implements Listener {
             return;
         }
         
-        ItemStack is = player.getItemInHand();
-        if (is != null && is.getType()!=Material.AIR) {
-            player.getInventory().addItem(is);
-            is.setTypeId(0);
-            is.setAmount(0);
+        Trade trade = manager.getTrade(player);
+        if (player.equals(trade.initiator.getPlayer()) && trade.initiator.getState().equals(TradeState.PREPARE)) {
+            return;
+        }
+        if (player.equals(trade.target.getPlayer()) && trade.target.getState().equals(TradeState.PREPARE)) {
+            return;
         }
 
         // abort trade
-        manager.getTrade(player).abort();
+        trade.abort();
     }
 }
